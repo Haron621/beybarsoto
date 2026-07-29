@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beybars Oto Servis — Премиальный Хай-Тек Сервис</title>
+    <!-- Подключаем Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .font-tech { font-family: 'Rajdhani', sans-serif; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* Эффект лазерного сканирования для кнопок */
+        .laser-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .laser-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(0, 242, 254, 0.6), transparent);
+            transform: rotate(30deg);
+            transition: all 0.7s ease;
+        }
+        .laser-btn:hover::after {
+            left: 140%;
+        }
+    </style>
+</head>
+<body class="bg-[#0B0F19] text-[#E2E8F0] font-sans antialiased selection:bg-[#00F2FE] selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- НАВИГАЦИЯ (HEADER) -->
+    <header class="border-b border-gray-800/60 backdrop-blur-md sticky top-0 z-50 bg-[#0B0F19]/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Логотип и Название -->
+            <div class="flex items-center space-x-3">
+                <!-- Интеграция логотипа из файла logo.jpg -->
+                <div class="h-12 w-auto flex items-center justify-center overflow-hidden">
+                    <img src="logo.jpg" alt="Beybars Oto Servis Logo" class="h-full w-auto object-contain brightness-200 invert tracking-normal" />
+                </div>
+                <span class="font-tech text-xl sm:text-2xl font-bold tracking-wider text-white">BEYBARS<span class="text-[#00F2FE]"> OTO SERVIS</span></span>
+            </div>
+
+            <!-- Десктопное Меню -->
+            <nav class="hidden xl:flex space-x-6 font-tech text-lg tracking-wide">
+                <a href="#" class="text-[#00F2FE] border-b border-[#00F2FE] px-1">Диагностика</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Электроника</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Ходовая</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Двигатель</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Кузовной ремонт</a>
+            </nav>
+
+            <!-- Кнопка Записаться (WhatsApp) и гамбургер -->
+            <div class="flex items-center space-x-4">
+                <a href="https://wa.me/905300385757?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D1%83%20%D0%B8%20%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82%20%D0%B0%D0%B2%D1%82%D0%BE." 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="font-tech tracking-wider text-xs sm:text-sm border border-[#00F2FE] text-[#00F2FE] px-4 py-2 rounded bg-[#00F2FE]/5 hover:bg-[#00F2FE] hover:text-black shadow-[0_0_15px_rgba(0,242,254,0.1)] hover:shadow-[0_0_15px_rgba(0,242,254,0.4)] transition duration-300 flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.292 1.503 4.883 1.504 5.428 0 9.846-4.414 9.849-9.841.002-2.63-1.023-5.101-2.887-6.967C16.528 2.025 14.056.994 11.433.994c-5.432 0-9.851 4.415-9.855 9.843-.001 1.701.451 3.361 1.309 4.821L1.861 22.13l6.786-1.781-.001-.003z"/>
+                    </svg>
+                    <span>ЗАПИСАТЬСЯ</span>
+                </a>
+                
+                <button onclick="toggleMobileMenu()" class="xl:hidden text-gray-400 hover:text-white focus:outline-none p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Выпадающее Мобильное Меню -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-[#0C1220] border-b border-gray-800 px-4 py-4 space-y-3 font-tech text-lg">
+            <a href="#" class="block text-[#00F2FE] py-1">Диагностика</a>
+            <a href="#" class="block text-gray-400 hover:text-white py-1 transition">Электроника</a>
+            <a href="#" class="block text-gray-400 hover:text-white py-1 transition">Ходовая</a>
+            <a href="#" class="block text-gray-400 hover:text-white py-1 transition">Двигатель</a>
+            <a href="#" class="block text-gray-400 hover:text-white py-1 transition">Кузовной ремонт</a>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-grow">
+        
+        <!-- ГЛАВНЫЙ ЭКРАН (HERO SECTION) -->
+        <section class="py-8 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <!-- Текст -->
+            <div class="space-y-4 sm:space-y-6 text-center lg:text-left order-2 lg:order-1">
+                <div class="inline-flex items-center space-x-2 bg-[#121824] border border-gray-800 px-3 py-1 rounded-full text-[10px] sm:text-xs font-tech tracking-widest text-[#00F2FE]">
+                    <span>[ SYSTEM DIAGNOSTICS PRO ]</span>
+                </div>
+                <h1 class="font-tech text-3xl sm:text-5xl lg:text-6xl font-bold text-white uppercase tracking-tight leading-tight sm:leading-none">
+                    Инженерный подход <br class="hidden sm:inline">к вашему <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F2FE] to-[#A100FF]">автомобилю</span>
+                </h1>
+                <p class="text-gray-400 text-sm sm:text-base lg:text-lg max-w-xl mx-auto lg:mx-0">
+                    Компьютерный скрининг, устранение сложных неисправностей электрики, ремонт агрегатов и восстановление геометрии кузова.
+                </p>
+                <div class="pt-2 sm:pt-4 w-full sm:w-auto">
+                    <a href="https://wa.me/905300385757?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B4%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D1%83%20%D0%B8%20%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82%20%D0%B0%D0%B2%D1%82%D0%BE." 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="laser-btn block text-center sm:inline-block font-tech text-lg sm:text-xl tracking-wider bg-gradient-to-r from-[#00F2FE] to-[#00b4fe] text-black font-bold px-8 py-3.5 sm:py-4 rounded shadow-[0_0_25px_rgba(0,242,254,0.3)] transition transform hover:-translate-y-0.5">
+                        ДИАГНОСТИКА //
+                    </a>
+                </div>
+            </div>
+
+            <!-- Интерактивный Визуал -->
+            <div class="order-1 lg:order-2 relative w-full h-[260px] sm:h-[380px] lg:h-[450px] bg-[#121824] rounded-2xl border border-gray-800/80 overflow-hidden flex items-center justify-center p-4 group">
+                <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:3rem_3rem] sm:bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20"></div>
+                
+                <div class="absolute top-3 left-3 font-tech text-[9px] sm:text-[10px] text-gray-500 space-y-0.5">
+                    <p>SCAN RATE: 4.8 kHz</p>
+                    <p>CORE TEMP: 38.2°C</p>
+                </div>
+                <div class="absolute bottom-3 right-3 font-tech text-[9px] sm:text-[10px] text-[#00F2FE]/60 tracking-widest animate-pulse">
+                    ▲ SECURE CONNECTION
+                </div>
+
+                <svg class="w-11/12 sm:w-4/5 h-auto text-gray-700 group-hover:text-[#00F2FE] transition-colors duration-700 opacity-40 group-hover:opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5">
+                    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12.3V16c0 .6.4 1 1 1h2m10 0a3 3 0 1 1-6 0m6 0a3 3 0 1 0-6 0M5 17h4"/>
+                </svg>
+
+                <div class="absolute w-48 h-48 sm:w-64 sm:h-64 border border-[#00F2FE]/20 rounded-full scale-90 group-hover:scale-105 transition-transform duration-1000 pointer-events-none flex items-center justify-center">
+                    <div class="w-36 h-36 sm:w-48 sm:h-48 border border-[#A100FF]/30 border-dashed rounded-full animate-[spin_20s_linear_infinite]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- БЛОК ИНТЕРАКТИВНЫХ УСЛУГ -->
+        <section class="py-12 border-t border-gray-900">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="font-tech text-2xl sm:text-3xl font-bold text-white tracking-wider uppercase">
+                    <span class="text-[#00F2FE]">//</span> Инженерные Решения и Ремонт
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Карточка 1 -->
+                <div class="bg-[#121824] border border-gray-800/80 p-5 sm:p-6 rounded-xl relative overflow-hidden group hover:border-[#00F2FE]/50 transition-all duration-300">
+                    <div class="font-tech text-xs text-[#00F2FE] tracking-widest mb-2">[ SYS_SCREENING ]</div>
+                    <h3 class="font-tech text-xl sm:text-2xl font-bold text-white mb-2">Компьютерный скрининг</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">Глубокое сканирование систем автомобиля по 140 параметрам, чтение скрытых ошибок, анализ текущих логов.</p>
+                    <div class="w-full h-10 bg-black/40 rounded border border-gray-800/50 flex items-end p-1 space-x-1 overflow-hidden">
+                        <div class="bg-[#00F2FE]/40 w-full h-1/2 group-hover:h-3/4 transition-all duration-300"></div>
+                        <div class="bg-[#00F2FE]/60 w-full h-2/3 group-hover:h-1/2 transition-all duration-300"></div>
+                        <div class="bg-[#00F2FE] w-full h-1/3 group-hover:h-5/6 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 -->
+                <div class="bg-[#121824] border border-gray-800/80 p-5 sm:p-6 rounded-xl relative overflow-hidden group hover:border-[#A100FF]/50 transition-all duration-300">
+                    <div class="font-tech text-xs text-[#A100FF] tracking-widest mb-2">[ ECU_REPAIR ]</div>
+                    <h3 class="font-tech text-xl sm:text-2xl font-bold text-white mb-2">Ремонт ЭБУ и электрики</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">Комплексное восстановление блоков управления (ECU), устранение коротких замыканий и перепайка элементов плат.</p>
+                    <div class="w-full h-10 bg-black/40 rounded border border-gray-800/50 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute left-0 w-0 h-[2px] bg-gradient-to-r from-transparent to-[#A100FF] group-hover:w-full transition-all duration-1000"></div>
+                        <span class="text-[10px] font-tech text-gray-600 group-hover:text-[#A100FF] transition-colors">DIAGNOSTIC_PATH_ACTIVE</span>
+                    </div>
+                </div>
+
+                <!-- Карточка 3 -->
+                <div class="bg-[#121824] border border-gray-800/80 p-5 sm:p-6 rounded-xl relative overflow-hidden group hover:border-[#00F2FE]/50 transition-all duration-300">
+                    <div class="font-tech text-xs text-[#00F2FE] tracking-widest mb-2">[ SUSPENSION_PRO ]</div>
+                    <h3 class="font-tech text-xl sm:text-2xl font-bold text-white mb-2">Ремонт ходовой части</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">Калибровка пневмоподвески, замена рычагов, сайлентблоков и высокоточная регулировка сход-развала на 3D-стенде.</p>
+                    <div class="w-full h-10 bg-black/40 rounded border border-gray-800/50 flex items-center justify-between px-4">
+                        <span class="text-[10px] font-tech text-gray-500">AXIS ALIGNMENT</span>
+                        <div class="w-12 h-1.5 bg-gray-800 rounded-full relative overflow-hidden">
+                            <div class="absolute left-1/2 top-0 -translate-x-1/2 w-1.5 h-1.5 bg-[#00F2FE] rounded-full group-hover:animate-ping"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 4 -->
+                <div class="bg-[#121824] border border-gray-800/80 p-5 sm:p-6 rounded-xl relative overflow-hidden group hover:border-[#A100FF]/50 transition-all duration-300">
+                    <div class="font-tech text-xs text-[#A100FF] tracking-widest mb-2">[ ENGINE_CORE ]</div>
+                    <h3 class="font-tech text-xl sm:text-2xl font-bold text-white mb-2">Ремонт двигателя</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">Диагностика эндоскопом, переборка ДВС, устранение масложора, замена цепей/ремней ГРМ с гарантией на сборку.</p>
+                    <div class="w-full h-10 bg-black/40 rounded border border-gray-800/50 flex items-center justify-between px-4">
+                        <span class="text-[10px] font-tech text-gray-500">BAR PRESSURE</span>
+                        <span class="font-tech text-[#A100FF] font-bold tracking-widest text-xs group-hover:scale-110 transition-transform">14.2 READY</span>
+                    </div>
+                </div>
+
+                <!-- Карточка 5 -->
+                <div class="bg-[#121824] border border-gray-800/80 p-5 sm:p-6 rounded-xl relative overflow-hidden group hover:border-[#00F2FE]/50 transition-all duration-300">
+                    <div class="font-tech text-xs text-[#00F2FE] tracking-widest mb-2">[ BODY_GEOMETRY ]</div>
+                    <h3 class="font-tech text-xl sm:text-2xl font-bold text-white mb-2">Кузовной ремонт</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6">Восстановление геометрии на стапеле по заводским точкам, локальный ремонт вмятин PDR и премиальная покраска.</p>
+                    <div class="w-full h-10 bg-black/40 rounded border border-gray-800/50 relative overflow-hidden flex items-center justify-center">
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#00F2FE]/10 to-transparent translate-y-full group-hover:animate-[bounce_1.5s_infinite]"></div>
+                        <span class="text-[10px] font-tech text-gray-600 group-hover:text-white transition-colors z-10">SURFACE_SCAN_OK</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ТЕХНОЛОГИЧНЫЙ ПОДВАЛ (FOOTER) С GOOGLE MAPS И INSTAGRAM -->
+    <footer class="bg-[#0C1220] border-t border-gray-800/80 mt-16 py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
+            
+            <!-- Блок 1: Адрес и ссылка на Google Maps -->
+            <div class="space-y-3 text-center md:text-left">
+                <div class="font-tech text-xs tracking-widest text-[#00F2FE]">[ HQ_LOCATION ]</div>
+                <p class="text-white font-medium text-sm sm:text-base leading-relaxed">Kestel Mah. İsa Küçülmez Caddesi No 197, Antalya/Alanya</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=36.501222,32.087556" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 font-tech text-sm tracking-wider text-gray-400 hover:text-[#00F2FE] transition group">
+                    <span>ОТКРЫТЬ В GOOGLE MAPS</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Блок 2: Социальные сети (Instagram) -->
+            <div class="flex flex-col items-center space-y-3">
+                <div class="font-tech text-xs tracking-widest text-[#A100FF]">[ CYBER_COMMUNITY ]</div>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 bg-gray-900/60 border border-gray-800 px-4 py-2 rounded-md hover:border-[#A100FF] hover:shadow-[0_0_15px_rgba(161,0,255,0.2)] transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-[#A100FF] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span class="font-tech text-sm tracking-wider text-white">@cyberauto_service</span>
+                </a>
+            </div>
+
+            <!-- Блок 3: Копирайт -->
+            <div class="text-center lg:text-right space-y-2 md:col-span-2 lg:col-span-1">
+                <div class="font-tech text-lg font-bold tracking-wider text-white">BEYBARS<span class="text-[#00F2FE]"> OTO SERVIS</span></div>
+                <p class="text-xs text-gray-500 font-tech tracking-wider">© 2026 BEYBARS OTO SERVIS. ALL SYSTEMS OPERATIONAL.</p>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Скрипт для мобильного меню -->
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
