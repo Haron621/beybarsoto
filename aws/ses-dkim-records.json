@@ -1,0 +1,32 @@
+{
+  "Comment": "Enable DKIM for Amazon SES on beybarsoto.com",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "pqbk3ri4w24eqesf5zuifnzt4my6mijb._domainkey.beybarsoto.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "pqbk3ri4w24eqesf5zuifnzt4my6mijb.dkim.amazonses.com"}]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "qwouhggr3gqqz6udyj3s7tdyensssv7a._domainkey.beybarsoto.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "qwouhggr3gqqz6udyj3s7tdyensssv7a.dkim.amazonses.com"}]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "edl5cd3ka5uajubvlsg3ccl4zukfvisw._domainkey.beybarsoto.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "edl5cd3ka5uajubvlsg3ccl4zukfvisw.dkim.amazonses.com"}]
+      }
+    }
+  ]
+}

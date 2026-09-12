@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Low-cost lead form backend for Beybars Oto Servis
+
+Parameters:
+  NotificationEmail:
+    Type: String
+    Default: sitekontrolbeybars@gmail.com
+  SenderEmail:
+    Type: String
+    Default: website@beybarsoto.com
+
+Resources:
+  LeadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: beybars-site-leads
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      SSESpecification:
+        SSEEnabled: true
+
+  LeadFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: StoreLeadAndNotify
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: dynamodb:PutItem
+                Resource: !GetAtt LeadsTable.Arn
+              - Effect: Allow
+                Action: ses:SendEmail
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    ses:FromAddress: !Ref SenderEmail
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+
+  LeadFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: beybars-site-lead-form
+      Runtime: nodejs22.x
+      Handler: index.handler
+      Role: !GetAtt LeadFunctionRole.Arn
+      MemorySize: 128
+      Timeout: 8
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref LeadsTable
+          NOTIFICATION_EMAIL: !Ref NotificationEmail
+          SENDER_EMAIL: !Ref SenderEmail
+      Code:
+        ZipFile: |
+          const crypto = require('crypto');
+          const { DynamoDBClient, PutItemCommand } = require('@aws-sdk/client-dynamodb');
+          const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
+          const db = new DynamoDBClient({});
+          const ses = new SESv2Client({});
+          const headers = { 'content-type': 'application/json; charset=utf-8' };
+          const response = (statusCode, body) => ({ statusCode, headers, body: JSON.stringify(body) });
+          const clean = (value, max) => String(value || '').trim().slice(0, max);
+          exports.handler = async (event) => {
+            if (event.requestContext?.http?.method !== 'POST') return response(405, { ok: false });
+            let data;
+            try { data = JSON.parse(event.body || '{}'); } catch { return response(400, { ok: false, error: 'invalid_request' }); }
+            if (clean(data.company, 100)) return response(200, { ok: true });
+            const website = clean(data.website, 300);
+            const contact = clean(data.contact, 100);
+            const description = clean(data.description, 1500);
+            const language = ['ru','en','tr'].includes(data.language) ? data.language : 'ru';
+            if (!website || !contact) return response(400, { ok: false, error: 'required_fields' });
+            let parsed;
+            try { parsed = new URL(website.match(/^https?:\/\//i) ? website : 'https://' + website); } catch { return response(400, { ok: false, error: 'invalid_website' }); }
+            if (!['http:','https:'].includes(parsed.protocol) || !parsed.hostname.includes('.')) return response(400, { ok: false, error: 'invalid_website' });
+            const sourceIp = event.requestContext?.http?.sourceIp || 'unknown';
+            const minute = Math.floor(Date.now() / 60000);
+            const rateId = 'RATE#' + crypto.createHash('sha256').update(sourceIp + ':' + minute).digest('hex');
+            try {
+              await db.send(new PutItemCommand({ TableName: process.env.TABLE_NAME, Item: { id:{S:rateId}, expiresAt:{N:String(Math.floor(Date.now()/1000)+120)} }, ConditionExpression:'attribute_not_exists(id)' }));
+            } catch (error) {
+              if (error.name === 'ConditionalCheckFailedException') return response(429, { ok:false, error:'too_many_requests' });
+              throw error;
+            }
+            const now = new Date().toISOString();
+            const leadId = 'LEAD#' + now + '#' + crypto.randomUUID();
+            await db.send(new PutItemCommand({ TableName: process.env.TABLE_NAME, Item: { id:{S:leadId}, createdAt:{S:now}, website:{S:parsed.href}, contact:{S:contact}, description:{S:description || '-'}, language:{S:language}, status:{S:'new'} } }));
+            const mail = {
+              ru:{subject:'\u041d\u043e\u0432\u0430\u044f \u0437\u0430\u044f\u0432\u043a\u0430 \u0441 beybarsoto.com',title:'\u041d\u043e\u0432\u0430\u044f \u0437\u0430\u044f\u0432\u043a\u0430: \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u0441\u0430\u0439\u0442\u0430',site:'\u0421\u0430\u0439\u0442',contact:'\u0422\u0435\u043b\u0435\u0444\u043e\u043d / WhatsApp',lang:'\u042f\u0437\u044b\u043a',desc:'\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435',empty:'\u041d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e',date:'\u0414\u0430\u0442\u0430 UTC'},
+              en:{subject:'New request from beybarsoto.com',title:'New request: website system check',site:'Website',contact:'Phone / WhatsApp',lang:'Language',desc:'Description',empty:'Not provided',date:'Date UTC'},
+              tr:{subject:'beybarsoto.com \u00fczerinden yeni ba\u015fvuru',title:'Yeni ba\u015fvuru: web sitesi kontrol\u00fc',site:'Web sitesi',contact:'Telefon / WhatsApp',lang:'Dil',desc:'A\u00e7\u0131klama',empty:'Belirtilmedi',date:'Tarih UTC'}
+            }[language];
+            const body = [mail.title,'',mail.site+': '+parsed.href,mail.contact+': '+contact,mail.lang+': '+language.toUpperCase(),mail.desc+': '+(description || mail.empty),'',mail.date+': '+now].join('\n');
+            const subject = mail.subject;
+            await ses.send(new SendEmailCommand({ FromEmailAddress:process.env.SENDER_EMAIL, Destination:{ToAddresses:[process.env.NOTIFICATION_EMAIL]}, Content:{Simple:{Subject:{Data:subject,Charset:'UTF-8'},Body:{Text:{Data:body,Charset:'UTF-8'}}}} }));
+            return response(201, { ok:true, id:leadId });
+          };
+
+  LeadFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${LeadFunction}
+      RetentionInDays: 14
+
+  LeadFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt LeadFunction.Arn
+      AuthType: NONE
+      InvokeMode: BUFFERED
+      Cors:
+        AllowOrigins:
+          - https://www.beybarsoto.com
+          - https://beybarsoto.com
+          - https://main.d2qkds6bluewqz.amplifyapp.com
+          - http://127.0.0.1:8765
+        AllowMethods:
+          - POST
+        AllowHeaders:
+          - content-type
+        MaxAge: 86400
+
+  LeadFunctionUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LeadFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+  LeadFunctionInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LeadFunction
+      Action: lambda:InvokeFunction
+      Principal: '*'
+      InvokedViaFunctionUrl: true
+
+Outputs:
+  LeadApiUrl:
+    Description: Public form endpoint
+    Value: !GetAtt LeadFunctionUrl.FunctionUrl
+  LeadsTableName:
+    Value: !Ref LeadsTable
